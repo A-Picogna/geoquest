@@ -79,7 +79,7 @@ public class MapTracker extends Activity implements LocationListener {
         mylocation.enableFollowLocation();
         map.getOverlays().add(mylocation);
 
-        locationFounded();
+        //locationFounded();
 
     }
 
