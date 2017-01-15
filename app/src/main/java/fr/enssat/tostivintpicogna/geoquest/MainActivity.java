@@ -1,77 +1,35 @@
 package fr.enssat.tostivintpicogna.geoquest;
 
-import android.os.Debug;
-import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+public class MainActivity extends AppCompatActivity {
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import fr.enssat.tostivintpicogna.geoquest.Model.GeoQuestData;
-import fr.enssat.tostivintpicogna.geoquest.Model.GeoQuestStep;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.views.MapView;
-
-public class MainActivity extends Activity {
-
-    static String TAG = "mainActivity";
-    String GeoQuestDataURL = "http://korobase.info/geoquest";
-    GeoQuestData gqd;
-
-    @Override public void onCreate(Bundle savedInstanceState) {
-
-
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //important! set your user agent to prevent getting banned from the osm servers
-        org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants.setUserAgentValue(BuildConfig.APPLICATION_ID);
+        Button launchButton = (Button) findViewById(R.id.launch_game);
 
-        askGeoQuestData();
 
-        MapView map = (MapView) findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
-        map.setBuiltInZoomControls(true);
-        map.setMultiTouchControls(true);
-    }
+        launchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //declare our intent object which takes two parameters, the context and the new activity name
 
-    void askGeoQuestData(){
-        //TextView mTxtDisplay;
-        //ImageView mImageView;
-        //mTxtDisplay = (TextView) findViewById(R.id.txtDisplay);
+                // the name of the receiving activity is declared in the Intent Constructor
+                Intent intent = new Intent(getApplicationContext(), MapTracker.class);
 
-        final JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, GeoQuestDataURL, null, new Response.Listener<JSONObject>() {
+                String sendMessage = "hello world";
+                //put the text inside the intent and send it to another Activity
+                //intent.putExtra("blabla", sendMessage);
+                //start the activity
+                startActivity(intent);
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        //mTxtDisplay.setText("Response: " + response.toString());
-                        // Code à mettre si succès
-                        try {
-                            gqd = new GeoQuestData(response);
-                            Log.d(TAG, gqd.getTitle());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        // Ex: changement information, etc...
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        int i =0;
-                        // Code à mettre si erreur
-                        // Ex: Code par défaut, message erreur, etc...
-                    }
-                });
-
-        // Access the RequestQueue through your singleton class.
-        DownloadManager.getInstance(this).addToRequestQueue(jsObjRequest);
+            }
+        });
     }
 }
