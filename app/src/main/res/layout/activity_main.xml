@@ -10,12 +10,37 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="fr.enssat.tostivintpicogna.geoquest.MainActivity">
 
-    <Button
-        android:text="Launch Game"
+    <TextView
+        android:text="GeoQuest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="19dp"
-        android:id="@+id/launch_game" />
+        android:layout_marginTop="88dp"
+        android:id="@+id/textView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+        android:textSize="64sp"
+        android:textColor="@color/colorPrimary" />
+
+    <Button
+        android:text="Lancer le jeu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="158dp"
+        android:id="@+id/launch_game"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text='GeoQuest est un jeu de recherche utilisant les capacités GPS du téléphone. Pour commencer la partie cliquez sur "Lancer le jeu"'
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="55dp"
+        android:id="@+id/textView2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textColor="@color/colorPrimaryDark" />
 </RelativeLayout>

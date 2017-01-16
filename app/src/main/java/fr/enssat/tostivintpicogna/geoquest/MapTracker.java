@@ -93,7 +93,7 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         askGeoQuestData();
     }
@@ -117,7 +117,7 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
         mylocation.enableFollowLocation();
         map.getOverlays().add(mylocation);
 
-        float distanceInMeters = p.distanceTo(step.getGpsPosition())/1E7f;
+        float distanceInMeters = p.distanceTo(step.getGpsPosition());
         Log.d(TAG, "Position : " + p.toString());
         Log.d(TAG, "Point étape : " + step.getGpsPosition().toString());
         Log.d(TAG, "Distance calculée : " + distanceInMeters);
@@ -202,7 +202,7 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
                 createIndiceDialog();
                 return true;
             case R.id.centerPositionItem:
-                nextStep();
+                centerPosition();
                 return true;
             default:
                 Log.wtf(TAG, "Mauvais item :" + getResources().getResourceEntryName(item.getItemId()));
@@ -259,6 +259,12 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
             toast.show();
 
             finish();
+        }
+    }
+
+    void centerPosition() {
+        if(p != null) {
+            mapController.setCenter(p);
         }
     }
 }

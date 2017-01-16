@@ -17,10 +17,16 @@
         android:layout_height="200dp"
         android:scaleType="centerCrop" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_weight="0.07"
+        android:layout_height="25dp" />
+
     <TextView
         android:text="Ceci est un texte qui ne devrait pas être vu !"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/indiceText"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAlignment="center" />
 </LinearLayout>
