@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -57,6 +58,9 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
     String GeoQuestDataURL = "http://s3.amazonaws.com/projet-enssat/geoquest";
     GeoQuestData gqd;
     int EtapeActuelle;
+    final float DISTANCE_MAX = 10.0f;
+
+    GeoPoint p;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,10 +102,11 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
     public void onLocationChanged(Location location) {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-        altitude = location.getAltitude();
         accuracy = location.getAccuracy();
 
-        GeoPoint p = new GeoPoint( (latitude ),  (longitude ));
+        GeoQuestStep step = gqd.getSteps().get(EtapeActuelle);
+
+        p = new GeoPoint( latitude, longitude);
 
         mapController.animateTo(p);
         mapController.setCenter(p);
@@ -112,7 +117,14 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
         mylocation.enableFollowLocation();
         map.getOverlays().add(mylocation);
 
-        //locationFounded();
+        float distanceInMeters = p.distanceTo(step.getGpsPosition())/1E7f;
+        Log.d(TAG, "Position : " + p.toString());
+        Log.d(TAG, "Point étape : " + step.getGpsPosition().toString());
+        Log.d(TAG, "Distance calculée : " + distanceInMeters);
+
+        if(distanceInMeters < DISTANCE_MAX) {
+            locationFounded();
+        }
 
     }
 
@@ -127,6 +139,7 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
                     }
                 });
         alertDialog.show();
+        nextStep();
     }
 
     @Override
@@ -234,8 +247,19 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
     }
 
     void nextStep() {
-        EtapeActuelle = EtapeActuelle + 1;
-        tb.setTitle(gqd.getSteps().get(EtapeActuelle).getTitreEtape());
+        if(EtapeActuelle+1 < gqd.getSteps().size()) {
+            EtapeActuelle = EtapeActuelle + 1;
+            tb.setTitle(gqd.getSteps().get(EtapeActuelle).getTitreEtape());
+        } else {
+            Context context = getApplicationContext();
+            CharSequence text = "You won !";
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+
+            finish();
+        }
     }
 }
 

@@ -18,7 +18,7 @@ public class GeoQuestStep {
                  String imageIndice,
                  String texteIndice) {
         this.titreEtape = titreEtape;
-        this.gpsPosition = new GeoPoint((lat * 1E6), (lng * 1E6));
+        this.gpsPosition = new GeoPoint(lng, lat);
         this.imageIndice = imageIndice;
         this.texteIndice = texteIndice;
     }
