@@ -49,5 +49,5 @@ dependencies {
     */
 
 
-    compile 'com.android.support:design:25.1.0'
+    compile 'com.android.support:design:24.1.0'
 }

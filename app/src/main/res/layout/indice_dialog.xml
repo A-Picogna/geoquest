@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:id="@+id/indice_dialog_linearlayout">
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:layout_width="match_parent"
+        app:srcCompat="@android:color/background_dark"
+        android:id="@+id/indiceImageView"
+        android:background="@android:color/background_dark"
+        android:adjustViewBounds="true"
+        android:layout_weight="0.20"
+        android:cropToPadding="true"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:text="Ceci est un texte qui ne devrait pas être vu !"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/indiceText"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+</LinearLayout>

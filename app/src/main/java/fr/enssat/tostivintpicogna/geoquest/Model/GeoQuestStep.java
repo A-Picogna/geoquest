@@ -22,4 +22,36 @@ public class GeoQuestStep {
         this.imageIndice = imageIndice;
         this.texteIndice = texteIndice;
     }
+
+    public String getTitreEtape() {
+        return titreEtape;
+    }
+
+    public void setTitreEtape(String titreEtape) {
+        this.titreEtape = titreEtape;
+    }
+
+    public GeoPoint getGpsPosition() {
+        return gpsPosition;
+    }
+
+    public void setGpsPosition(GeoPoint gpsPosition) {
+        this.gpsPosition = gpsPosition;
+    }
+
+    public String getImageIndice() {
+        return imageIndice;
+    }
+
+    public void setImageIndice(String imageIndice) {
+        this.imageIndice = imageIndice;
+    }
+
+    public String getTexteIndice() {
+        return texteIndice;
+    }
+
+    public void setTexteIndice(String texteIndice) {
+        this.texteIndice = texteIndice;
+    }
 }

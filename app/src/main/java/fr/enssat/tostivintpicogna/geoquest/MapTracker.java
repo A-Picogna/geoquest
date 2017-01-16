@@ -11,12 +11,21 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.NetworkImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,12 +38,14 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import fr.enssat.tostivintpicogna.geoquest.Model.GeoQuestData;
+import fr.enssat.tostivintpicogna.geoquest.Model.GeoQuestStep;
 
-public class MapTracker extends Activity implements LocationListener {
+public class MapTracker extends AppCompatActivity implements LocationListener {
 
     private LocationManager lm;
     private MapController mapController;
     private MapView map;
+    private Toolbar tb;
     private double latitude;
     private double longitude;
     private double altitude;
@@ -45,11 +56,19 @@ public class MapTracker extends Activity implements LocationListener {
     static String TAG = "mapTrackerActivity";
     String GeoQuestDataURL = "http://s3.amazonaws.com/projet-enssat/geoquest";
     GeoQuestData gqd;
+    int EtapeActuelle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_tracker);
+
+        tb = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(tb);
+        tb.inflateMenu(R.menu.menu_map_tracker);
+
+
+
         //important! set your user agent to prevent getting banned from the osm servers
         org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants.setUserAgentValue(BuildConfig.APPLICATION_ID);
 
@@ -139,7 +158,7 @@ public class MapTracker extends Activity implements LocationListener {
                         // Code à mettre si succès
                         try {
                             gqd = new GeoQuestData(response);
-                            Log.d(TAG, gqd.getTitle());
+                            onGeoQuestDataLoaded();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -155,6 +174,68 @@ public class MapTracker extends Activity implements LocationListener {
 
         // Access the RequestQueue through your singleton class.
         DownloadManager.getInstance(this).addToRequestQueue(jsObjRequest);
+    }
+
+    void onGeoQuestDataLoaded() {
+        EtapeActuelle = 0;
+        tb.setTitle(gqd.getSteps().get(0).getTitreEtape());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(TAG, "onOptionsItemSelected");
+        switch (item.getItemId()){
+            case R.id.showIndiceItem:
+                createIndiceDialog();
+                return true;
+            case R.id.centerPositionItem:
+                nextStep();
+                return true;
+            default:
+                Log.wtf(TAG, "Mauvais item :" + getResources().getResourceEntryName(item.getItemId()));
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    void createIndiceDialog() {
+        Log.d(TAG, "Entree dans le createur de dialogue");
+        AlertDialog.Builder adb = new AlertDialog.Builder(MapTracker.this);
+
+        GeoQuestStep etape = gqd.getSteps().get(EtapeActuelle);
+
+        LayoutInflater li = LayoutInflater.from(MapTracker.this);
+        LinearLayout ll = (LinearLayout) li.inflate(R.layout.indice_dialog, null);
+
+        TextView texteIndice = (TextView) ll.findViewById(R.id.indiceText);
+        NetworkImageView imageIndice = (NetworkImageView) ll.findViewById(R.id.indiceImageView);
+
+        texteIndice.setText(etape.getTexteIndice());
+
+        ImageLoader mImageLoader = DownloadManager.getInstance(this).getImageLoader();
+        imageIndice.setImageUrl(etape.getImageIndice(), mImageLoader);
+
+        adb.setView(ll);
+
+        adb.setNeutralButton("COMPRIS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog ad = adb.create();
+        ad.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_map_tracker,menu);
+        return true;
+    }
+
+    void nextStep() {
+        EtapeActuelle = EtapeActuelle + 1;
+        tb.setTitle(gqd.getSteps().get(EtapeActuelle).getTitreEtape());
     }
 }
 
