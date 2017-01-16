@@ -11,7 +11,15 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.util.GeoPoint;
@@ -19,6 +27,8 @@ import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
+import fr.enssat.tostivintpicogna.geoquest.Model.GeoQuestData;
 
 public class MapTracker extends Activity implements LocationListener {
 
@@ -31,6 +41,10 @@ public class MapTracker extends Activity implements LocationListener {
     private double accuracy;
     private MyLocationNewOverlay mylocation;
     private Location destination;
+
+    static String TAG = "mapTrackerActivity";
+    String GeoQuestDataURL = "http://s3.amazonaws.com/projet-enssat/geoquest";
+    GeoQuestData gqd;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +72,7 @@ public class MapTracker extends Activity implements LocationListener {
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
 
+        askGeoQuestData();
     }
 
     @Override
@@ -108,6 +123,38 @@ public class MapTracker extends Activity implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    void askGeoQuestData(){
+        //TextView mTxtDisplay;
+        //ImageView mImageView;
+        //mTxtDisplay = (TextView) findViewById(R.id.txtDisplay);
+
+        final JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, GeoQuestDataURL, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //mTxtDisplay.setText("Response: " + response.toString());
+                        // Code à mettre si succès
+                        try {
+                            gqd = new GeoQuestData(response);
+                            Log.d(TAG, gqd.getTitle());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        // Ex: changement information, etc...
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, error.toString());
+                    }
+                });
+
+        // Access the RequestQueue through your singleton class.
+        DownloadManager.getInstance(this).addToRequestQueue(jsObjRequest);
     }
 }
 

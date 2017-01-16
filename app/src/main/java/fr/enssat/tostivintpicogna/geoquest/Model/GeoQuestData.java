@@ -18,7 +18,7 @@ public class GeoQuestData {
     List<GeoQuestStep> steps = new LinkedList<GeoQuestStep>();
     public GeoQuestData(JSONObject response) throws JSONException {
 
-        this.title = response.getString("title");
+        this.title = response.getString("name");
         JSONArray buffer = response.getJSONArray("steps");
 
         for(int i = 0; i < buffer.length(); i++) {
@@ -26,8 +26,8 @@ public class GeoQuestData {
             steps.add(new GeoQuestStep(
                     o.getString("titreEtape"),
 
-                    (float)o.getJSONObject("gpsPosition").getDouble("north"),
-                    (float)o.getJSONObject("gpsPosition").getDouble("west"),
+                    (float)o.getJSONObject("gpsPosition").getDouble("lat"),
+                    (float)o.getJSONObject("gpsPosition").getDouble("lng"),
 
                     o.getString("imageIndice"),
                     o.getString("texteIndice")
