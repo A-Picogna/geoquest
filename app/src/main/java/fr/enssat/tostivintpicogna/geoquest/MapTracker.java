@@ -104,8 +104,6 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
         longitude = location.getLongitude();
         accuracy = location.getAccuracy();
 
-        GeoQuestStep step = gqd.getSteps().get(EtapeActuelle);
-
         p = new GeoPoint( latitude, longitude);
 
         mapController.animateTo(p);
@@ -117,13 +115,16 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
         mylocation.enableFollowLocation();
         map.getOverlays().add(mylocation);
 
-        float distanceInMeters = p.distanceTo(step.getGpsPosition());
-        Log.d(TAG, "Position : " + p.toString());
-        Log.d(TAG, "Point étape : " + step.getGpsPosition().toString());
-        Log.d(TAG, "Distance calculée : " + distanceInMeters);
+        if(gqd != null) {
+            GeoQuestStep step = gqd.getSteps().get(EtapeActuelle);
+            float distanceInMeters = p.distanceTo(step.getGpsPosition());
+            Log.d(TAG, "Position : " + p.toString());
+            Log.d(TAG, "Point étape : " + step.getGpsPosition().toString());
+            Log.d(TAG, "Distance calculée : " + distanceInMeters);
 
-        if(distanceInMeters < DISTANCE_MAX) {
-            locationFounded();
+            if(distanceInMeters < DISTANCE_MAX) {
+                locationFounded();
+            }
         }
 
     }
@@ -199,7 +200,8 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
         Log.d(TAG, "onOptionsItemSelected");
         switch (item.getItemId()){
             case R.id.showIndiceItem:
-                createIndiceDialog();
+                if(gqd != null)
+                    createIndiceDialog();
                 return true;
             case R.id.centerPositionItem:
                 centerPosition();
