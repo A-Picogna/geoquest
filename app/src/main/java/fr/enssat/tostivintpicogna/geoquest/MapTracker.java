@@ -38,6 +38,9 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.util.LinkedList;
+import java.util.Random;
+
 import fr.enssat.tostivintpicogna.geoquest.Model.GeoQuestData;
 import fr.enssat.tostivintpicogna.geoquest.Model.GeoQuestStep;
 
@@ -131,8 +134,8 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
 
     public void locationFounded(){
         AlertDialog alertDialog = new AlertDialog.Builder(MapTracker.this).create();
-        alertDialog.setTitle("Alert");
-        alertDialog.setMessage("Congratz, you've found the location!");
+        alertDialog.setTitle("Location trouvée !");
+        alertDialog.setMessage("Bravo ! Vous avez trouvé la location, vous pouvez désormais passer à la suivante.");
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -171,7 +174,13 @@ public class MapTracker extends AppCompatActivity implements LocationListener {
                         //mTxtDisplay.setText("Response: " + response.toString());
                         // Code à mettre si succès
                         try {
-                            gqd = new GeoQuestData(response);
+                            Random rand = new Random();
+                            GeoQuestData gqd_recupere = new GeoQuestData(response);
+                            LinkedList<GeoQuestStep> gqs = new LinkedList<>();
+                            for (int i=0; i < 3; i++) {
+                                gqs.add(gqd_recupere.getSteps().get(rand.nextInt(gqd_recupere.getSteps().size())));
+                            }
+                            gqd = new GeoQuestData("Set_"+ Integer.toString(rand.nextInt(100)), gqs);
                             onGeoQuestDataLoaded();
                         } catch (JSONException e) {
                             e.printStackTrace();

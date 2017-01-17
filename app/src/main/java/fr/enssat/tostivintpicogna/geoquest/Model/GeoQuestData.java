@@ -35,6 +35,11 @@ public class GeoQuestData {
         }
     }
 
+    public GeoQuestData(String title, List<GeoQuestStep> steps) {
+        this.setTitle(title);
+        this.setSteps(steps);
+    }
+
     public List<GeoQuestStep> getSteps() {
         return steps;
     }
